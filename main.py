@@ -22,6 +22,9 @@ clock = pygame.time.Clock()
 #framerate is set to 60 frames per second
 FPS = 60
 
+#GameVariables
+GRAVITY = 1
+
 #define colours
 WHITE = (255,255,255)
 
@@ -31,6 +34,7 @@ bg_image = pygame.image.load("Assets/el-capitan.png").convert_alpha()
 
 #player class
 class Player(): 
+    
     def __init__(self,x,y):
         self.image = pygame.transform.scale(player_image, (45,45))
        
@@ -40,6 +44,8 @@ class Player():
         #get_rect function nochmal nachschauen/verstehen
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = (x,y)
+        #gives the velocity of the player on the y axis
+        self.vel_y = 0
          #flip method ensures that char looks in the direction of movement
         self.flip = False
 
@@ -69,6 +75,11 @@ class Player():
             dx = 10
             self.flip = False
 
+        #gravity
+        #every interation of the gameloop, gravity is increasing
+        self.vel_y += GRAVITY
+        dy += self.vel_y
+
 
         #ensure player doesn't go off the edge of the screen
         #maybe this can be a seperate function
@@ -81,6 +92,11 @@ class Player():
         if self.rect.right + dx > SCREEN_WIDTH:
             dx = SCREEN_WIDTH - self.rect.right
 
+        # check collision with ground
+        if self.rect.bottom + dy > SCREEN_HIGHT:
+            dy = 0 
+            self.vel_y = -20
+
         #update rectangle position
         self.rect.x += dx
         self.rect.y += dy
@@ -92,7 +108,7 @@ class Player():
         #screen.blit(self.image, self.rect)
         
         #shows me the "collision" rectangle
-        pygame.draw.rect(screen, WHITE,self.rect, 2)
+        #pygame.draw.rect(screen, WHITE,self.rect, 2)
 
 
 # sets Player coordinates in middle bottom part of the screen
