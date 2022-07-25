@@ -19,6 +19,7 @@ pygame.display.set_caption("Lumpy Jumpy")
 #set frame rate
 clock = pygame.time.Clock()
 
+#framerate is set to 60 frames per second
 FPS = 60
 
 #define colours
@@ -46,16 +47,20 @@ class Player():
 
         # reset variables
         # these extra positional variables are introduced to simplify collision checks
+        # and control that player does not leave the screen
         dx = 0
         dy = 0
         
-        # keypresses 
+        # which keypresses are present
         key = pygame.key.get_pressed()
         
-        if key[pygame.K_a]:
+        #checks if Key a is pressed
+        #tweeking with dx changes movement speed
+        if key[pygame.K_a]: 
             dx = - 10
             self.flip = True
-
+        
+        # checks if key d is pressed
         if key[pygame.K_d]:
             dx = 10
             self.flip = False
@@ -87,13 +92,17 @@ class Player():
 # sets Player coordinates in middle bottom part of the screen
 jumpy = Player(SCREEN_WIDTH // 2, SCREEN_HIGHT - 150 )
 
+
 #game loop
+# game runs as long as run = true
 run = True
+
 while run : 
-    
+
+    #ensures that gameplay is 60 frames per second
     clock.tick(FPS)
 
-
+    #enables movement of the player
     jumpy.move()
 
     #draw backgound image
