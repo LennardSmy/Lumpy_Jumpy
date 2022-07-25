@@ -40,6 +40,7 @@ class Player():
         #get_rect function nochmal nachschauen/verstehen
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = (x,y)
+         #flip method ensures that char looks in the direction of movement
         self.flip = False
 
     def move(self):
@@ -48,6 +49,7 @@ class Player():
         # reset variables
         # these extra positional variables are introduced to simplify collision checks
         # and control that player does not leave the screen
+        # "d" stands for delta. It symbolizes the change in the x and y coordinate respectively
         dx = 0
         dy = 0
         
@@ -56,6 +58,8 @@ class Player():
         
         #checks if Key a is pressed
         #tweeking with dx changes movement speed
+       
+        
         if key[pygame.K_a]: 
             dx = - 10
             self.flip = True
@@ -68,11 +72,12 @@ class Player():
 
         #ensure player doesn't go off the edge of the screen
         #maybe this can be a seperate function
+        #checks if player goes over left edge of the screen
+        #gives the distance bewtween the players lefthand side and edge of the screen
         if self.rect.left +dx < 0: 
             dx = 0 - self.rect.left
 
-
-            
+        #checks if player goes over right edge of the screen    
         if self.rect.right + dx > SCREEN_WIDTH:
             dx = SCREEN_WIDTH - self.rect.right
 
@@ -82,6 +87,7 @@ class Player():
 
     def draw(self):
         # coordinates are in relation to position of player rectangle -> self.rect
+        #flip method ensures that char looks in the direction of movement
         screen.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x -3, self.rect.y - 4))
         #screen.blit(self.image, self.rect)
         
