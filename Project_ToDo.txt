@@ -17,3 +17,4 @@ Funktionen, die ich nachgucken muss:
 			screen.blit(self.image, (self.rect.x - 12, self.rect.y - 5))
 
 - herausfinden, was sprites sind
+

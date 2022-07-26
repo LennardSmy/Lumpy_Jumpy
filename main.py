@@ -26,6 +26,7 @@ FPS = 60
 
 #GameVariables
 GRAVITY = 1
+#the max number of platforms is limited to 10
 MAX_PLATFORMS = 10 
 
 
@@ -87,7 +88,7 @@ class Player():
         self.vel_y += GRAVITY
         dy += self.vel_y
 
-
+        
         #ensure player doesn't go off the edge of the screen
         #maybe this can be a seperate function
         #checks if player goes over left edge of the screen
@@ -102,10 +103,13 @@ class Player():
         #check collision with platforms
         for platform in platform_group:
             #collision in the y direction
+            #colliderect() checks if platform rectangle collides with player rectangle
             if platform.rect.colliderect(self.rect.x,self.rect.y + dy, self.width, self.height):
-                #check if above platfrom
+                #check if player is above platfrom
                 if self.rect.bottom < platform.rect.centery: 
+                    #should only collide when falling -> velocity needs do be larger than 0
                     if self.vel_y > 0:
+                        #ensures that player bounces off the top of the plattform
                         self.rect.bottom = platform.rect.top
                         dy = 0 
                         self.vel_y = -20
@@ -130,10 +134,11 @@ class Player():
         #shows me the "collision" rectangle
         #pygame.draw.rect(screen, WHITE,self.rect, 2)
 
+#platform class
+#we are using a sprite class for more and easier functionality
 
-#we are using a sprite class for more functionality
 class Platform(pygame.sprite.Sprite):
-
+    #we leave width undefined so we can tweek with it later
     def __init__(self, x, y, width):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.transform.scale(platform_image,(width,10))
@@ -147,10 +152,11 @@ class Platform(pygame.sprite.Sprite):
 jumpy = Player(SCREEN_WIDTH // 2, SCREEN_HIGHT - 150 )
 
 #create sprite groups
+# platforms are stored in this group
 platform_group = pygame.sprite.Group()
 
 #create temporary platfroms
-#for ramdonmization we import the module "random"
+#for ramdonmization of platform location and width we import the module "random"
 for p in range(MAX_PLATFORMS):
     p_width = random.randint(40,60)
     p_x = random.randint(0, SCREEN_WIDTH - p_width)
@@ -175,6 +181,7 @@ while run :
     screen.blit(bg_image, (-100,0))
 
     #draw sprites 
+    #draw method of platform_groups comes with sprite groups
     platform_group.draw(screen)
     jumpy.draw()
 
