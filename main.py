@@ -25,18 +25,36 @@ clock = pygame.time.Clock()
 FPS = 60
 
 #GameVariables
+
+#defines the threshhold at which when the player reaches it, 
+#the screen starts scrolling
+SCROLL_THRESH = 200
+
 GRAVITY = 1
 #the max number of platforms is limited to 10
-MAX_PLATFORMS = 10 
+MAX_PLATFORMS = 10
 
+
+#this variable is gonna change during the game
+scroll = 0
+
+# sets the background scroll speed
+bg_scroll = 0
 
 #define colours
 WHITE = (255,255,255)
 
 #load images
 player_image = pygame.image.load("Assets/Doodler_char.png").convert_alpha()
-bg_image = pygame.image.load("Assets/el-capitan.png").convert_alpha()
+bg_image = pygame.image.load("Assets/el-capitan_croped.png").convert_alpha()
 platform_image = pygame.image.load("Assets/cucumber_platform.png").convert_alpha()
+
+
+#function for drawing the background
+def draw_bg(bg_scroll):
+    #-100 auf der x achse damit der Bildausschnitt passt. 
+    screen.blit(bg_image, (0,0 + bg_scroll))
+    screen.blit(bg_image, (0,-600 + bg_scroll))
 
 
 
@@ -58,15 +76,16 @@ class Player():
         self.flip = False
 
     def move(self):
+        
         #here you can change the move speed
-
         # reset variables
         # these extra positional variables are introduced to simplify collision checks
         # and control that player does not leave the screen
         # "d" stands for delta. It symbolizes the change in the x and y coordinate respectively
         dx = 0
         dy = 0
-        
+        #scroll variable is resetet every time move is called
+        scroll = 0
         # which keypresses are present
         key = pygame.key.get_pressed()
         
@@ -90,7 +109,7 @@ class Player():
 
         
         #ensure player doesn't go off the edge of the screen
-        #maybe this can be a seperate function
+        
         #checks if player goes over left edge of the screen
         #gives the distance bewtween the players lefthand side and edge of the screen
         if self.rect.left +dx < 0: 
@@ -121,9 +140,24 @@ class Player():
             dy = 0 
             self.vel_y = -20
 
+
+        # check if the player has bounced to the top of the screen
+        if self.rect.top <= SCROLL_THRESH:
+            #once the player has reached the threshold it stops moving 
+            # and the screen moves relative to it
+            #player velocity is dy , so scroll variable needs to be negative dy
+            #if player is jumping
+            if self.vel_y < 0:
+                scroll = -dy 
+
         #update rectangle position
         self.rect.x += dx
-        self.rect.y += dy
+        #adding the scroll variable here makes the player freeze on y position when hitting SCROLL_THRESH
+        #dy and scroll cancel each other out    
+
+        self.rect.y += dy + scroll
+
+        return scroll
 
     def draw(self):
         # coordinates are in relation to position of player rectangle -> self.rect
@@ -145,6 +179,12 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def update(self,scroll):
+        
+        #update platform's vertical position
+        self.rect.y += scroll
+
 
 
 #player instance
@@ -174,11 +214,23 @@ while run :
     clock.tick(FPS)
 
     #enables movement of the player
-    jumpy.move()
+    scroll = jumpy.move()
+    
 
     #draw backgound image
-    #-100 auf der x achse damit der Bildausschnitt passt. 
-    screen.blit(bg_image, (-100,0))
+    bg_scroll += scroll
+    #if background scroll reaches top of second bg image it is reset to 0 -> endless scroll
+    #image height is 600 pixels
+    if bg_scroll >= 600: 
+        bg_scroll = 0
+
+    draw_bg(bg_scroll)
+
+    #draw temporary scrollthreshhold
+    pygame.draw.line(screen,WHITE,(0,SCROLL_THRESH), (SCREEN_WIDTH, SCROLL_THRESH))
+
+    #update platforms
+    platform_group.update(scroll)
 
     #draw sprites 
     #draw method of platform_groups comes with sprite groups

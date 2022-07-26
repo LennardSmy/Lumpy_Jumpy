@@ -18,3 +18,4 @@ Funktionen, die ich nachgucken muss:
 
 - herausfinden, was sprites sind
 
+- come up with another background image -> seemless scrolling
