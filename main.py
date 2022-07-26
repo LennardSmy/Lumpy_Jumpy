@@ -10,11 +10,11 @@ pygame.init()
 #game window
 
 SCREEN_WIDTH = 400
-SCREEN_HIGHT = 600
+SCREEN_HEIGHT = 600
 
 #create game window
 
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 
 pygame.display.set_caption("Lumpy Jumpy")
 
@@ -136,7 +136,7 @@ class Player():
                 
                 
         # check collision with ground
-        if self.rect.bottom + dy > SCREEN_HIGHT:
+        if self.rect.bottom + dy > SCREEN_HEIGHT:
             dy = 0 
             self.vel_y = -20
 
@@ -184,17 +184,23 @@ class Platform(pygame.sprite.Sprite):
         
         #update platform's vertical position
         self.rect.y += scroll
+        
+        # check if platform has gone off the screen
+        #if it has, we delete this platform
+        if self.rect.top > SCREEN_HEIGHT:
+            self.kill()
 
 
 
 #player instance
 # sets Player coordinates in middle bottom part of the screen
-jumpy = Player(SCREEN_WIDTH // 2, SCREEN_HIGHT - 150 )
+jumpy = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150 )
 
 #create sprite groups
 # platforms are stored in this group
 platform_group = pygame.sprite.Group()
 
+'''
 #create temporary platfroms
 #for ramdonmization of platform location and width we import the module "random"
 for p in range(MAX_PLATFORMS):
@@ -203,7 +209,10 @@ for p in range(MAX_PLATFORMS):
     p_y = p* random.randint(80,120)
     platform = Platform(p_x,p_y,p_width)
     platform_group.add(platform)
-
+'''
+#create starting platform
+platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT -50, 100 )
+platform_group.add(platform)
 #game loop
 # game runs as long as run = true
 run = True
@@ -226,8 +235,20 @@ while run :
 
     draw_bg(bg_scroll)
 
+
+    '''
     #draw temporary scrollthreshhold
     pygame.draw.line(screen,WHITE,(0,SCROLL_THRESH), (SCREEN_WIDTH, SCROLL_THRESH))
+    '''
+    #generate platforms
+    if len(platform_group) < MAX_PLATFORMS:
+        p_width = random.randint(40,60)
+        p_x = random.randint(0, SCREEN_WIDTH - p_width)
+        p_y = platform.rect.y - random.randint(80,120)
+        platform = Platform(p_x,p_y,p_width)
+        platform_group.add(platform)
+        
+
 
     #update platforms
     platform_group.update(scroll)
