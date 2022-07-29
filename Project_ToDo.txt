@@ -19,3 +19,6 @@ Funktionen, die ich nachgucken muss:
 - herausfinden, was sprites sind
 
 - come up with another background image -> seemless scrolling
+
+- come up with other PANEL colour -> uni rot ? 
+- score adjustments - smaller score
