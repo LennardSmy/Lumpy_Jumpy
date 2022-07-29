@@ -1,6 +1,7 @@
 #import libraries
 # 
 from platform import platform
+from scipy import rand
 
 from sqlalchemy import false, true
 import pygame
@@ -224,15 +225,34 @@ class Player():
 
 class Platform(pygame.sprite.Sprite):
     #we leave width undefined so we can tweek with it later
-    def __init__(self, x, y, width):
+    #moving argument for extra difficulty
+    def __init__(self, x, y, width, moving):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.transform.scale(platform_image,(width,10))
+        #adjustments for moving platforms
+        self.moving = moving
+        self.move_counter = random.randint(0,50)
+        self.direction = random.choice([-1,1])
+        self.speed = random.randint(1,2)
+
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
     def update(self,scroll):
         
+        #move platform side to side if it is a moving platform
+        if self.moving == True:
+            self.move_counter += 1
+            self.rect.x += self.direction * self.speed
+
+
+        #change platform directio if it has moved fully or hits a wall
+
+        if self.move_counter >= 100 or self.rect.left < 0 or self.rect.right > SCREEN_WIDTH: 
+            self.direction *= -1
+            self.move_counter = 0 
+
         #update platform's vertical position
         self.rect.y += scroll
         
@@ -262,7 +282,7 @@ for p in range(MAX_PLATFORMS):
     platform_group.add(platform)
 '''
 #create starting platform
-platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT -50, 100 )
+platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT -50, 100, False )
 platform_group.add(platform)
 #game loop
 # game runs as long as run = True
@@ -299,7 +319,14 @@ while run :
             p_width = random.randint(40,60)
             p_x = random.randint(0, SCREEN_WIDTH - p_width)
             p_y = platform.rect.y - random.randint(80,120)
-            platform = Platform(p_x,p_y,p_width)
+            #we are adding another type (moving) of platform to increase difficulty
+            p_type = random.randint(1,2)
+            #second condition ensures that moving platforms only start after score of 500 
+            if p_type == 1 and score > 500: 
+                p_moving = True
+            else:
+                p_moving = False
+            platform = Platform(p_x,p_y,p_width,p_moving)
             platform_group.add(platform)
             
 
@@ -371,7 +398,7 @@ while run :
                 #reset platforms
                 platform_group.empty()
                 #create starting platform
-                platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100)
+                platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
                 platform_group.add(platform)
             
 
