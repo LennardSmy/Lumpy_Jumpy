@@ -7,7 +7,6 @@ import pygame
 import random
 
 #initialize pygame
-pygame.init()
 
 #game window
 
@@ -56,10 +55,14 @@ fade_counter = 0
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 
+
+#for some reason i need to initialize pygame to be able to access font function -> Stack overflow 
+pygame.init()
 #define font for on screen text
 font_small = pygame.font.SysFont("Lucida Sans", 20)
 
 font_big = pygame.font.SysFont("Lucida Sans", 24)
+
 
 #load images
 player_image = pygame.image.load("Assets/Doodler_char.png").convert_alpha()
@@ -294,9 +297,11 @@ while run :
             game_over = True
     
     else:
+        #if statement to start the fade effect when game over
         if fade_counter < SCREEN_WIDTH:
+            # by incrementally increasing fade counter seemingly continuous movement is possible , the increment is the movement speed
             fade_counter += 5
-            # here we make a fancy transition into black screen with 3 Black bars coming in from left and right respectively
+            # here we make a fancy transition into black screen with each 3 Black bars coming in from left and right respectively
             for y in range(0,6,2):
                 pygame.draw.rect(screen,BLACK,(0,y * 100,fade_counter, SCREEN_HEIGHT / 6))
                 pygame.draw.rect(screen,BLACK,(SCREEN_WIDTH - fade_counter,(y+1) * 100 ,SCREEN_WIDTH, SCREEN_HEIGHT/6))
@@ -311,7 +316,6 @@ while run :
         if key[pygame.K_SPACE]:
 			#reset variables
             game_over = False
-            #print(game_over)
             score = 0
             scroll = 0
             fade_counter = 0
