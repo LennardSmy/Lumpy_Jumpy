@@ -23,4 +23,6 @@ Funktionen, die ich nachgucken muss:
 - come up with other PANEL colour -> uni rot ? 
 - score adjustments - smaller score
 maybe add perfect pixel collision later
+maybe inlcude funnier sounds
+make it an executable file
 

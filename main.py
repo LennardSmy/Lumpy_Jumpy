@@ -8,13 +8,17 @@ from sqlalchemy import false, true
 import pygame
 import random
 import os
+from pygame import mixer
 from spritesheet import SpriteSheet
 from enemy import Enemy
 
 
 
 
-#initialize pygame
+#initialize pygame 
+mixer.init()
+pygame.init()
+
 
 #game window
 
@@ -32,6 +36,22 @@ clock = pygame.time.Clock()
 
 #framerate is set to 60 frames per second
 FPS = 60
+
+#load music and sounds
+pygame.mixer.music.load("Assets/music.mp3")
+#60 percent volume
+pygame.mixer.music.set_volume(0.6)
+
+#first arg = how many times it should play -> -1 is infinite loop 
+#second arg = starting point in the track
+pygame.mixer.music.play(-1,0.0)
+
+jump_effect = pygame.mixer.Sound("Assets/jump.mp3")
+jump_effect.set_volume(0.6) 
+
+death_effect = pygame.mixer.Sound("Assets/death.mp3")
+death_effect.set_volume(0.6) 
+
 
 #GameVariables
 
@@ -71,8 +91,6 @@ BLACK = (0,0,0)
 PANEL =(153,217,234)
 
 
-#for some reason i need to initialize pygame to be able to access font function -> Stack overflow 
-pygame.init()
 #define font for on screen text
 font_small = pygame.font.SysFont("Lucida Sans", 20)
 
@@ -195,6 +213,8 @@ class Player():
                         self.rect.bottom = platform.rect.top
                         dy = 0 
                         self.vel_y = -20
+                        #insert jumping sound after player is moving back up again
+                        jump_effect.play()
                 
         # we dont need this anymore        
         '''        
@@ -305,7 +325,7 @@ while run :
 
     #ensures that gameplay is 60 frames per second
     clock.tick(FPS)
-    print(high_score)
+    #print(high_score)
 
 
     if game_over == False:
@@ -387,11 +407,14 @@ while run :
 
         if jumpy.rect.top > SCREEN_HEIGHT: 
             game_over = True
+            death_effect.play()
         
         #check for collision with enemies
         #pygame method that checks for collision between two instance rectangles
         if pygame.sprite.spritecollide(jumpy, enemy_group, False):
             game_over = true
+            death_effect.play()
+
     
     else:
         #if statement to start the fade effect when game over
