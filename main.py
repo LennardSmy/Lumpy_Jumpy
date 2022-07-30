@@ -1,12 +1,17 @@
 #import libraries
 # 
 from platform import platform
+from turtle import update
 from scipy import rand
 
 from sqlalchemy import false, true
 import pygame
 import random
 import os
+from spritesheet import SpriteSheet
+from enemy import Enemy
+
+
 
 
 #initialize pygame
@@ -78,6 +83,12 @@ font_big = pygame.font.SysFont("Lucida Sans", 24)
 player_image = pygame.image.load("Assets/Doodler_char.png").convert_alpha()
 bg_image = pygame.image.load("Assets/el-capitan_croped.png").convert_alpha()
 platform_image = pygame.image.load("Assets/cucumber_platform.png").convert_alpha()
+#bird spritesheet - basis for enemy animation
+bird_sheet_img = pygame.image.load("Assets/bird.png").convert_alpha()
+bird_sheet = SpriteSheet(bird_sheet_img)
+
+
+
 
 
 #function for outputting text onto the screen
@@ -270,6 +281,8 @@ jumpy = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150 )
 #create sprite groups
 # platforms are stored in this group
 platform_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
+
 
 '''
 #create temporary platfroms
@@ -334,6 +347,18 @@ while run :
         #update platforms
         platform_group.update(scroll)
 
+        #generate enemies
+        #only create one enemy at a time and only when score passes certain number
+        if len(enemy_group) == 0 and score > 1000:
+            enemy = Enemy(SCREEN_WIDTH,100,bird_sheet,1.5)
+            enemy_group.add(enemy)
+
+        
+        #update enemies
+        enemy_group.update(scroll, SCREEN_WIDTH)
+
+
+
         #update score
         #update of score variable is dependent on scroll variable
         if scroll > 0:
@@ -349,7 +374,9 @@ while run :
         #draw sprites 
         #draw method of platform_groups comes with sprite groups
         platform_group.draw(screen)
+        enemy_group.draw(screen)
         jumpy.draw()
+
 
         #draw panel
         draw_panel()
@@ -360,6 +387,11 @@ while run :
 
         if jumpy.rect.top > SCREEN_HEIGHT: 
             game_over = True
+        
+        #check for collision with enemies
+        #pygame method that checks for collision between two instance rectangles
+        if pygame.sprite.spritecollide(jumpy, enemy_group, False):
+            game_over = true
     
     else:
         #if statement to start the fade effect when game over
@@ -395,8 +427,13 @@ while run :
                 fade_counter = 0
                 #reposition jumpy
                 jumpy.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
+                
+                #reset enemies
+                enemy_group.empty()
+                
                 #reset platforms
                 platform_group.empty()
+
                 #create starting platform
                 platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
                 platform_group.add(platform)
