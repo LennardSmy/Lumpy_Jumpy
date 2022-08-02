@@ -98,8 +98,8 @@ font_big = pygame.font.SysFont("Lucida Sans", 24)
 
 
 #load images
-player_image = pygame.image.load("Assets/Doodler_char.png").convert_alpha()
-bg_image = pygame.image.load("Assets/el-capitan_croped.png").convert_alpha()
+player_image = pygame.image.load("Assets/ninja_char.png").convert_alpha()
+bg_image = pygame.image.load("Assets/fruit_bg.png").convert_alpha()
 platform_image = pygame.image.load("Assets/cucumber_platform.png").convert_alpha()
 #bird spritesheet - basis for enemy animation
 bird_sheet_img = pygame.image.load("Assets/bird.png").convert_alpha()
