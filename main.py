@@ -387,8 +387,8 @@ while run :
         
         #draw line at previous high score
 
-        pygame.draw.line(screen,WHITE,(0,score - high_score + SCROLL_THRESH),(SCREEN_WIDTH,score - high_score + SCROLL_THRESH), 3)
-        draw_text("HIGH SCORE",font_small,WHITE,SCREEN_WIDTH - 130, score - high_score + SCROLL_THRESH )
+        pygame.draw.line(screen,BLACK,(0,score - high_score + SCROLL_THRESH),(SCREEN_WIDTH,score - high_score + SCROLL_THRESH), 3)
+        draw_text("HIGH SCORE",font_small,BLACK,SCREEN_WIDTH - 130, score - high_score + SCROLL_THRESH )
 
 
         #draw sprites 
