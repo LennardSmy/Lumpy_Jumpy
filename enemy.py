@@ -76,7 +76,7 @@ class Enemy(pygame.sprite.Sprite):
 
         #move enemy
         #2 defines the speed of the bird - speed is fixed - could be made into a random speed variable
-        self.rect.x += self.direction * 2
+        self.rect.x += self.direction * 1.5
         self.rect.y += scroll
 
         #check if gone off screen
