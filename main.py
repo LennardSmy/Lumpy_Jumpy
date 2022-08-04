@@ -349,7 +349,7 @@ while run :
         '''
         #generate platforms
         if len(platform_group) < MAX_PLATFORMS:
-            p_width = random.randint(40,60)
+            p_width = random.randint(40,70)
             p_x = random.randint(0, SCREEN_WIDTH - p_width)
             p_y = platform.rect.y - random.randint(80,120)
             #we are adding another type (moving) of platform to increase difficulty
@@ -369,7 +369,7 @@ while run :
 
         #generate enemies
         #only create one enemy at a time and only when score passes certain number
-        if len(enemy_group) == 0 and score > 1000:
+        if len(enemy_group) == 0 and score > 1500:
             enemy = Enemy(SCREEN_WIDTH,100,bird_sheet,1.5)
             enemy_group.add(enemy)
 
